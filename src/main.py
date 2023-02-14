@@ -76,8 +76,8 @@ class MyGUI:
         self.chessPieceBorderPhoto = tk.PhotoImage(file = r'../img/blackBorder.png')
         self.chessPieceBorderPhoto90x90 = tk.PhotoImage(file = r'../img/blackBorder90x90.png')
         self.yellowSquare = tk.PhotoImage(file = r'../img/yellowSquare.png')
-        self.chessPieceBorderID = self.background.create_image(200, 100, anchor ='nw', image = self.chessPieceBorderPhoto)
-        self.background.delete(self.chessPieceBorderID)
+        self.chessPieceBorderID = [self.background.create_image(200, 100, anchor ='nw', image = self.chessPieceBorderPhoto)]
+        self.background.delete(self.chessPieceBorderID[0])
         self.chessPieceBorderRowCol = [0, 0]
         self.chessMoveBorderIDs = []
         self.possibleMoves = self.aic.listAllPossibleMoves()
@@ -107,12 +107,13 @@ class MyGUI:
         else:
             chessSquare = self.aic.get_boardAs2DListFlipped()[self.chessPieceBorderRowCol[0]][self.chessPieceBorderRowCol[1]].isupper()
         if (chessSquare == self.aic.get_isWhiteTurn()) and self.isStarted and not self.isGameEnded and not (not self.isGameEnded and self.isStarted and ((self.isWhiteBottom and ((self.aic.get_isWhiteTurn() and not self.isBottomUser) or (not self.aic.get_isWhiteTurn() and not self.isTopUser))) or (not self.isWhiteBottom and ((not self.aic.get_isWhiteTurn() and not self.isBottomUser) or (self.aic.get_isWhiteTurn() and not self.isTopUser))))):
-            self.chessPieceBorderID = self.background.create_image((self.chessPieceBorderRowCol[1] + 2) * 100, self.chessPieceBorderRowCol[0] * 100, anchor ='nw', image = self.chessPieceBorderPhoto)
-            self.background.tag_bind(self.chessPieceBorderID, '<Leave>', self.chessPiecesOffHoverFunction, add='+')
-            self.background.tag_bind(self.chessPieceBorderID, '<Button>', self.chessPiecesOnClickFunction, add='+')
+            self.chessPieceBorderID.append(self.background.create_image((self.chessPieceBorderRowCol[1] + 2) * 100, self.chessPieceBorderRowCol[0] * 100, anchor ='nw', image = self.chessPieceBorderPhoto))
+            self.background.tag_bind(self.chessPieceBorderID[-1], '<Leave>', self.chessPiecesOffHoverFunction, add='+')
+            self.background.tag_bind(self.chessPieceBorderID[-1], '<Button>', self.chessPiecesOnClickFunction, add='+')
 
     def chessPiecesOffHoverFunction(self, event):
-        self.background.delete(self.chessPieceBorderID)
+        for ID in self.chessPieceBorderID:
+            self.background.delete(ID)
 
     def chessPiecesOnClickFunction(self, event):
         if self.isWhiteBottom:
